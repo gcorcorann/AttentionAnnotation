@@ -3,8 +3,11 @@
 
 int main(int argc, char* argv[])
 {
-	std::string dataPath = "/home/gary/datasets/accv/";
-	Annotate ann(dataPath); // video annotation object
-	ann.readVideos();
+	int beginFrame = 40;
+	int endFrame = 60;
+	std::string videoPath = "/home/gary/datasets/accv/positive/000310.mp4";
+	// video annotator object
+	Annotate annotate(videoPath, beginFrame, endFrame);
+	annotate.displayVideo();
 	return 0;
 }
