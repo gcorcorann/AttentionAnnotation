@@ -2,6 +2,7 @@
 #ifndef ANNOTATE_H_
 #define ANNOTATE_H_
 
+#include "Label.h"
 #include <string>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -9,51 +10,88 @@
 class Annotate
 {
 	private:
-		std::string videoPath; // path of video
-		cv::VideoCapture cap;  // videocapture object
-		int beginFrame;		   // start displaying video at this frame
-		int stopFrame;		   // stop displaying video at this frame
+		Label label;
+		cv::VideoCapture cap;  					// videocapture object
+		int beginFrame;		  					// start displaying video at this frame
+		int stopFrame;		   					// stop displaying video at this frame
+		int delay;			   					// delay between displaying frames [ms]
 		bool openVideo();
 		bool readFrame(cv::Mat& frame);
+		bool userVideoControls(bool& pause);	// grabs video controls from user
+		bool setBeginFrame();  					// sets beginning frame of video
+		bool checkFrame(int findex);			// check if current frame == stopFrame
+		void displayVideo();
+		void release();							// release video and display
+												// resources
+		int getAnnotation();					// grabs user's annotation for
+												// video
 	public:
+		/**
+		 * Annotate constructor.
+		 *
+		 * @param	none
+		 *
+		 */
+		Annotate() { };
 		/**
 		 * Annotate constructor
 		 *
-		 * @param videoPath_		path to video
+		 * @param 	videoPath_		path to video
 		 *
 		 */
-		Annotate(std::string videoPath_);
+		Annotate(const std::string& videoPath);
 
 		/**
 		 * Annotate constructor.
 		 *
-		 * @param videoPath_		path to video
-		 * @param beginFrame_	display video starting at this frame index
+		 * @param 	videoPath_		path to video
+		 * @param	beginFrame_	display video starting at this frame index
 		 *						@pre >=0 & <= total frames in video
-		 * @param stopFrame_		stop displaying video at this frame index
+		 * @param 	stopFrame_		stop displaying video at this frame index
 		 *							video
 		 */
-		Annotate(std::string videoPath_, int beginFrame_, int stopFrame_);
+		Annotate(const std::string& videoPath, int beginFrame_, int stopFrame_, int
+				delay_);
 
 		/**
 		 * Set the range of frames to display.
 		 *
-		 * @param beginFrame_		display video starting at this frame index
+		 * @param	beginFrame_		display video starting at this frame index
 		 *							@pre >= 0 & <= total frames in video
-		 * @param stopFrame_		stop displaying video at this frame index
+		 * @param	stopFrame_		stop displaying video at this frame index
 		 *							@pre >= beginFrame_ & <= total frames in
 		 *							video
-		 * @returns		nothing
+		 * @return	nothing
 		 */
 		void setFrameRanges(int beginFrame_, int stopFrame_);
 
 		/**
-		 * Displays selected range of video frames.
+		 * Set video path.
 		 *
-		 * @returns		nothing
+		 * @param	videoPath_	path of video file
+		 *
+		 * @return	nothing
 		 */
-		void displayVideo();
+		void setVideoPath(const std::string& videoPath_);
 
+		/**
+		 * Set frame delay.
+		 *
+		 * @param	delay_	delay between frames [ms]
+		 *					@pre >= 0
+		 *
+		 * @return	nothing
+		 */
+		void setDelay(int delay_);
+
+		/**
+		 * Run annotation for video stored in videoPath.
+		 *
+		 * @param	none
+		 *
+		 * @return	nothing
+		 */
+		void run();
 };
 
 #endif /* ANNOTATE_H_ */

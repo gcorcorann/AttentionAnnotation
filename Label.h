@@ -11,12 +11,10 @@ class Label
 		std::string videoPath;
 	public:
 		Label();
-		Label(std::string);
-		Label(int, std::string);
-		void storeCategory(int cat);
-		void storeVideoPath(std::string path);
+		void setCategory(const int& cat);
+		void setVideoPath(const std::string& path);
 		int getCategory() { return category; }
-		std::string getVideoPath() { return videoPath; }
+		const std::string& getVideoPath() { return videoPath; }
 };
 
 #endif /* LABEL_H_ */
