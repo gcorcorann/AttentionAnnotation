@@ -7,65 +7,65 @@
 
 class Controller
 {
-	private:
-		Annotate annotator;
-		std::string dataPath;
-	public:
-		/**
-		 * Controller constructor.
-		 *
-		 * @param	dataPath	path to dataset
-		 *						@pre must end in '/'
-		 * @param	beginFrame	beginning frame of display video
-		 *						@pre >= 0 & <= total number of frames
-		 * @param	endFrame	ending frame of display video
-		 *						@pre >= beginFrame & <= total number of frames
-		 *
-		 */
-		Controller(const std::string& dataPath, int beginFrame, int endFrame, int
-				delay);
+    private:
+    	Annotate annotator;
+    	std::string dataPath;
+    public:
+    	/**
+    	 * Controller constructor.
+    	 *
+    	 * @param   dataPath    path to dataset
+	 *                      @pre must end in '/'
+    	 * @param   beginFrame  beginning frame of display video
+    	 *			@pre >= 0 & <= total number of frames
+    	 * @param   endFrame    ending frame of display video
+    	 *			@pre >= beginFrame & <= total number of frames
+    	 *
+    	 */
+    	Controller(const std::string& dataPath, int beginFrame, int endFrame, 
+            int delay);
+	
+        /**
+    	 * Set displaying frame ranges.
+    	 *
+    	 * @param   beginFrame	beginning frame to display video
+    	 *		    	@pre >= 0 & <= total number of frames
+    	 * @param   endFrame	end frame of displaying video
+    	 *  			@pre >= beginFrame & <= total number of frame
+    	 *
+    	 * @return  nothing
+    	 */
+    	void setFrameRanges(int beginFrame, int endFrame);
 
-		/**
-		 * Set displaying frame ranges.
-		 *
-		 * @param	beginFrame	beginning frame to display video
-		 *						@pre >= 0 & <= total number of frames
-		 * @param	endFrame	end frame of displaying video
-		 *						@pre >= beginFrame & <= total number of frame
-		 *
-		 * @return	nothing
-		 */
-		void setFrameRanges(int beginFrame, int endFrame);
+    	/**
+    	 * Set delay between displaying frames.
+    	 *
+    	 * @param   delay   delay between frames [ms]
+    	 *		    @pre >= 0
+    	 *
+    	 * @return  nothing
+    	 */
+    	void setDelay(int delay);
 
-		/**
-		 * Set delay between displaying frames.
-		 *
-		 * @param	delay	delay between frames [ms]
-		 *					@pre >= 0
-		 *
-		 * @return	nothing
-		 */
-		void setDelay(int delay);
-
-		/**
-		 * Set path of dataset.
-		 *
-		 * @param	dataPath_	path to dataset being used.
-		 *						@pre must contain 'positive' & 'negative'
-		 *						subfolders
-		 *
-		 * @return	nothing
-		 */
-		void setDataPath(const std::string& dataPath_);
-		
-		/**
-		 * Run annotator on all videos in dataset.
-		 *
-		 * @param	none
-		 *
-		 * @return	nothing
-		 */
-		void run();
+    	/**
+    	 * Set path of dataset.
+    	 *
+    	 * @param   dataPath_	path to dataset being used.
+    	 *			@pre must contain 'positive' & 'negative'
+    	 *			    subfolders
+    	 *
+    	 * @return  nothing
+    	 */
+    	void setDataPath(const std::string& dataPath_);
+    	
+    	/**
+    	 * Run annotator on all videos in dataset.
+    	 *
+    	 * @param   none
+    	 *
+    	 * @return  nothing
+    	 */
+    	void run();
 
 };
 

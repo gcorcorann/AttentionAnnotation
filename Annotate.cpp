@@ -9,60 +9,60 @@
 
 Annotate::Annotate(const std::string& VideoPath)
 {
-	label.setVideoPath(VideoPath);
-	beginFrame = -1;
-	stopFrame = -1;
-	delay = 0;
+    label.setVideoPath(VideoPath);
+    beginFrame = -1;
+    stopFrame = -1;
+    delay = 0;
 }
 
-Annotate::Annotate(const std::string& videoPath, int beginFrame_, int stopFrame_, int
-		delay_)
+Annotate::Annotate(const std::string& videoPath, int beginFrame_, 
+    int stopFrame_, int delay_)
 {
-	label.setVideoPath(videoPath);
-	beginFrame = beginFrame_;
-	stopFrame = stopFrame_;
-	delay = delay_;
+    label.setVideoPath(videoPath);
+    beginFrame = beginFrame_;
+    stopFrame = stopFrame_;
+    delay = delay_;
 }
 
 /**
  * Open videos located at videoPath.
  *
- * @return	true if the video is opened, else false
+ * @return  true if the video is opened, else false
  */
 bool Annotate::openVideo()
 {
-	// open video
-	cap.open(label.getVideoPath());
-	// check if we succeeded
-	if (!cap.isOpened())
-	{ 
-		std::cout << "Could not open video." << std::endl;
-		return false;
-	}
-	else
-	{
-		std::cout << "Video opened." << std::endl;
-		return true;
-	}
+    // open video
+    cap.open(label.getVideoPath());
+    // check if we succeeded
+    if (!cap.isOpened())
+    { 
+    	std::cout << "Could not open video." << std::endl;
+    	return false;
+    }
+    else
+    {
+    	std::cout << "Video opened." << std::endl;
+    	return true;
+    }
 }
 
 /**
  * Reads next video frame.
  *
- * @param[out]	frame	stores current frame at this location
+ * @param[out]  frame   stores current frame at this location
  *
- * @return		true if next frame is read, else false
+ * @return  true if next frame is read, else false
  */
 bool Annotate::readFrame(cv::Mat& frame)
 {
-	if (!cap.read(frame))
-	{
-		std::cout << "End of file." << std::endl;
-		return false;
-	}
-	else {
-		return true;
-	}
+    if (!cap.read(frame))
+    {
+    	std::cout << "End of file." << std::endl;
+    	return false;
+    }
+    else {
+    	return true;
+    }
 }
 
 /**
@@ -70,144 +70,152 @@ bool Annotate::readFrame(cv::Mat& frame)
  *
  * @param[out]	pause	true if user paused video, else false
  *
- * @return		return false if user presses 'q', else return true
+ * @return  false if user presses 'q', else true
  */
 bool Annotate::userVideoControls(bool& pause)
 {
-	char key = cv::waitKey(delay);
-	if (key == char('q'))
-	{
-		std::cout << "Video closed." << std::endl;
-		return false;
-	}
-	else if (key == char('p'))
-	{
-		if (!pause) { std::cout << "Video paused." << std::endl; }
-		else { std::cout << "Video unpaused." << std::endl; }
-		pause = !pause;
-		return true;
-	}
-	else { return true; }
+    char key = cv::waitKey(delay);
+    if (key == char('q'))
+    {
+    	std::cout << "Video closed." << std::endl;
+    	return false;
+    }
+    else if (key == char('p'))
+    {
+    	if (!pause) { std::cout << "Video paused." << std::endl; }
+    	else { std::cout << "Video unpaused." << std::endl; }
+    	pause = !pause;
+    	return true;
+    }
+    else { return true; }
 }
 
 /**
  * Check if we have reached stopFrame.
  *
- * @param	findex		current frame index
- *						@pre >= 0 and <= total number of frames
+ * @param   findex  current frame index
+ *		    @pre >= 0 and <= total number of frames
  *
- * @return	false if we are currently at stopFrame, else true
+ * @return  false if we are currently at stopFrame, else true
  */
 bool Annotate::checkFrame(int findex)
 {
-	if (findex == stopFrame)
-	{
-		std::cout << "Reached stop frame." << std::endl;
-		return false;
-	}
-	else { return true; }
+    if (findex == stopFrame)
+    {
+    	std::cout << "Reached stop frame." << std::endl;
+    	return false;
+    }
+    else { return true; }
 }
 
 /**
  * Release video and display resources.
  *
- * @param	none
+ * @param   none
  *
- * @return	nothing
+ * @return  nothing
  */
 void Annotate::release()
 {
-	cv::destroyAllWindows();
-	cap.release();
+    cv::destroyAllWindows();
+    cap.release();
 }
 
 /**
  * Displays selected range of video frames to user.
  *
- * @return	nothing
+ * @return  nothing
  */
 void Annotate::displayVideo()
 {
-	// check if we can open video
-	if (!openVideo()) { return; }
-	// set video to start at frame
-	if (!cap.set(CV_CAP_PROP_POS_FRAMES, beginFrame))
-	{
-		std::cout << "Error with beginFrame." << std::endl;
-		return;
+    // check if we can open video
+    if (!openVideo()) { return; }
+    // set video to start at frame
+    if (!cap.set(CV_CAP_PROP_POS_FRAMES, beginFrame))
+    {
+    	std::cout << "Error with beginFrame." << std::endl;
+    	return;
+    }
+    // store video frame	
+    cv::Mat frame;
+    cv::namedWindow("Frame", cv::WINDOW_AUTOSIZE);
+    // count frame index
+    int fcount = beginFrame;
+    // pause flag
+    bool pause = false;
+    while (fcount != stopFrame)
+    {
+    	// check if video is paused
+    	if (!pause) {
+    	    // read new frame
+    	    if (!readFrame(frame)) { break; }
+    	    // increase frame index
+	    fcount++;
+	    // check if we reached stopFrame
+	    if (!checkFrame(fcount)) { break; }
+	    // display frame
+	    cv::imshow("Frame", frame);
 	}
-	// store video frame	
-	cv::Mat frame;
-	cv::namedWindow("Frame", cv::WINDOW_AUTOSIZE);
-	// count frame index
-	int fcount = beginFrame;
-	// pause flag
-	bool pause = false;
-	while (fcount != stopFrame)
-	{
-		// check if video is paused
-		if (!pause) {
-			// read new frame
-			if (!readFrame(frame)) { break; }
-			// increase frame index
-			fcount++;
-			// check if we reached stopFrame
-			if (!checkFrame(fcount)) { break; }
-			// display frame
-			cv::imshow("Frame", frame);
-		}
-		// grab user's input
-		if (!userVideoControls(pause)) { break; }
-	}
-	// release resources
-	release();
+	// grab user's input
+	if (!userVideoControls(pause)) { break; }
+    }
+    // release resources
+    release();
 }
 
 /**
  * Grab annotation from user.
  *
- * @param	none
+ * @param   none
  *
- * @return	nothing
+ * @return  nothing
  */
 int Annotate::getAnnotation()
 {
-	int label = 0;
-	std::string s;
-	// wait for user to enter a correct range of labels
-	for (;;)
-	{
-		std::cout << "Enter annotation label [1-4]: ";
-		getline(std::cin, s);	
-		std::stringstream(s) >> label;
-		if (label == 1 || label == 2 || label == 3 || label == 4) { break; }
-		else { std::cout << "Please try again..." << std::endl; }
-	}
-	return label;
+    int label = 0;
+    std::string s;
+    // wait for user to enter a correct range of labels
+    for (;;)
+    {
+        std::cout << "***********************************" << std::endl;
+        std::cout << "*     Video Annotation Table      *" << std::endl;
+        std::cout << "* Level 1 - Low Attention         *" << std::endl;
+        std::cout << "* Level 2 - Medium Attention      *" << std::endl;
+        std::cout << "* Level 3 - High Attention        *" << std::endl;
+        std::cout << "* Level 4 - Very High Attention   *" << std::endl;
+        std::cout << "***********************************" << std::endl;
+    	std::cout << "Enter annotation label [1-4]: ";
+    	getline(std::cin, s);	
+    	std::stringstream(s) >> label;
+    	if (label == 1 || label == 2 || label == 3 || label == 4) { break; }
+    	else { std::cout << "Please try again..." << std::endl; }
+    }
+    std::cout << std::endl;
+    return label;
 }
 
 void Annotate::setFrameRanges(int beginFrame_, int stopFrame_)
 {
-	beginFrame = beginFrame_;
-	stopFrame = stopFrame_;
+    beginFrame = beginFrame_;
+    stopFrame = stopFrame_;
 }
 
 void Annotate::setVideoPath(const std::string& videoPath)
 {
-	label.setVideoPath(videoPath);
+    label.setVideoPath(videoPath);
 }
 
 void Annotate::setDelay(int delay_)
 {
-	delay = delay_;
+    delay = delay_;
 }
 
 void Annotate::run()
 {
-	// display video and grab user video control inputs
-	displayVideo();
-	// get video annotation from user
-	int category = getAnnotation();
-	// store label information in Label object
-	label.setCategory(category);
+    // display video and grab user video control inputs
+    displayVideo();
+    // get video annotation from user
+    int category = getAnnotation();
+    // store label information in Label object
+    label.setCategory(category);
 }
