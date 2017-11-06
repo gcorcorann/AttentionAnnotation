@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
@@ -210,6 +211,11 @@ void Annotate::setDelay(int delay_)
     delay = delay_;
 }
 
+void Annotate::setAnnotationFile(const std::string& fileName)
+{
+    fname = fileName;
+}
+
 void Annotate::run()
 {
     // display video and grab user video control inputs
@@ -218,4 +224,12 @@ void Annotate::run()
     int category = getAnnotation();
     // store label information in Label object
     label.setCategory(category);
+    // open annotation file
+    std::ofstream labels;
+    labels.open(fname, std::ios::app);
+    // store file name and annotation
+    std::string s = std::to_string(category);
+    labels << label.getVideoPath() +  " " + s + "\n";
+    // close file
+    labels.close();
 }

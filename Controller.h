@@ -20,11 +20,21 @@ class Controller
     	 *			@pre >= 0 & <= total number of frames
     	 * @param   endFrame    ending frame of display video
     	 *			@pre >= beginFrame & <= total number of frames
+         * @param   fileName    name of video annotations text file
     	 *
     	 */
     	Controller(const std::string& dataPath, int beginFrame, int endFrame, 
-            int delay);
+            int delay, const std::string& fileName);
 	
+        /**
+         * Sets annotion file.
+         *
+         * @param   fileName    name of file to store annotation labels
+         *
+         * @return  nothing
+         */
+        void setAnnotationFile(const std::string& fileName);
+
         /**
     	 * Set displaying frame ranges.
     	 *
