@@ -8,9 +8,9 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/videoio.hpp>
 
-Annotate::Annotate(const std::string& VideoPath)
+Annotate::Annotate(const std::string& videoPath)
 {
-    label.setVideoPath(VideoPath);
+    vidPath = videoPath;
     beginFrame = -1;
     stopFrame = -1;
     delay = 0;
@@ -19,7 +19,7 @@ Annotate::Annotate(const std::string& VideoPath)
 Annotate::Annotate(const std::string& videoPath, int beginFrame_, 
     int stopFrame_, int delay_)
 {
-    label.setVideoPath(videoPath);
+    vidPath = videoPath;
     beginFrame = beginFrame_;
     stopFrame = stopFrame_;
     delay = delay_;
@@ -33,7 +33,7 @@ Annotate::Annotate(const std::string& videoPath, int beginFrame_,
 bool Annotate::openVideo()
 {
     // open video
-    cap.open(label.getVideoPath());
+    cap.open(vidPath);
     // check if we succeeded
     if (!cap.isOpened())
     { 
@@ -203,7 +203,7 @@ void Annotate::setFrameRanges(int beginFrame_, int stopFrame_)
 
 void Annotate::setVideoPath(const std::string& videoPath)
 {
-    label.setVideoPath(videoPath);
+    vidPath = videoPath;
 }
 
 void Annotate::setDelay(int delay_)
@@ -222,14 +222,12 @@ void Annotate::run()
     displayVideo();
     // get video annotation from user
     int category = getAnnotation();
-    // store label information in Label object
-    label.setCategory(category);
     // open annotation file
     std::ofstream labels;
     labels.open(fname, std::ios::app);
     // store file name and annotation
     std::string s = std::to_string(category);
-    labels << label.getVideoPath() +  " " + s + "\n";
+    labels << vidPath +  " " + s + "\n";
     // close file
     labels.close();
 }

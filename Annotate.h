@@ -2,7 +2,6 @@
 #ifndef ANNOTATE_H_
 #define ANNOTATE_H_
 
-#include "Label.h"
 #include <string>
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -10,7 +9,7 @@
 class Annotate
 {
     private:
-    	Label label;
+        std::string vidPath;
         std::string fname;      // video annotations file
     	cv::VideoCapture cap;  	// videocapture object
     	int beginFrame;		// start displaying video at this frame
