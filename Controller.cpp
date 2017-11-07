@@ -74,6 +74,7 @@ void Controller::run()
     shuffleData(videos, VIDEOS_SIZE);
     for (int i = 0; i < VIDEOS_SIZE; ++i)
     {
+        std::cout << i << std::endl;
         std::cout << videos[i] << std::endl;
 	annotator.setVideoPath(videos[i]);
 	annotator.run();
