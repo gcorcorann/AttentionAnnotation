@@ -10,6 +10,8 @@ class Controller
     private:
     	Annotate annotator;
     	std::string dataPath;
+        void readData(std::string videos[]);
+        void shuffleData(std::string videos[], int length);
     public:
     	/**
     	 * Controller constructor.

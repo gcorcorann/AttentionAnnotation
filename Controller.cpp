@@ -2,6 +2,8 @@
 #include "Controller.h"
 #include <string>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <experimental/filesystem>
 
 namespace fs = std::experimental::filesystem;
@@ -35,25 +37,45 @@ void Controller::setDataPath(const std::string& dataPath_)
     dataPath = dataPath_;
 }
 
-void Controller::run()
+void Controller::readData(std::string videos[])
 {
-    int count = 0;
-    // for positive videos
+    int index = 0;
+    // read positive videos
     for (auto& p : fs::directory_iterator(dataPath + "positive/"))
     {
-        count++;
-        std::cout << count << std::endl;
-        std::cout << p.path() << std::endl;
-	annotator.setVideoPath(p.path());
-	annotator.run();
+        videos[index] = p.path();
+        index++;
     }
-    // for negative videos
+    // read negative videos
     for (auto& p : fs::directory_iterator(dataPath + "negative/"))
     {
-        count++;
-        std::cout << count << std::endl;
-    	std::cout << p.path() << std::endl;
-    	annotator.setVideoPath(p.path());
-    	annotator.run();
+        videos[index] = p.path();
+        index++;
+    }
+}
+
+void Controller::shuffleData(std::string videos[], int length)
+{
+    srand(time(0)); // initialize seed "randomly"
+    for (int i = 0; i < length; ++i)
+    {
+        int r = rand() % length;
+        std::string temp = videos[i];
+        videos[i] = videos[r];
+        videos[r] = temp;
+    }
+}
+
+void Controller::run()
+{
+    const int VIDEOS_SIZE = 1750;
+    std::string videos[VIDEOS_SIZE];
+    readData(videos);
+    shuffleData(videos, VIDEOS_SIZE);
+    for (int i = 0; i < VIDEOS_SIZE; ++i)
+    {
+        std::cout << videos[i] << std::endl;
+	annotator.setVideoPath(videos[i]);
+	annotator.run();
     }
 }
