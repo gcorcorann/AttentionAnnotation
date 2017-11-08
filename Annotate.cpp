@@ -42,7 +42,7 @@ bool Annotate::openVideo()
     }
     else
     {
-    	std::cout << "Video opened." << std::endl;
+    	//std::cout << "Video opened." << std::endl;
     	return true;
     }
 }
@@ -58,7 +58,7 @@ bool Annotate::readFrame(cv::Mat& frame)
 {
     if (!cap.read(frame))
     {
-    	std::cout << "End of file." << std::endl;
+    	//std::cout << "End of file." << std::endl;
     	return false;
     }
     else {
@@ -78,13 +78,13 @@ bool Annotate::userVideoControls(bool& pause)
     char key = cv::waitKey(delay);
     if (key == char('q'))
     {
-    	std::cout << "Video closed." << std::endl;
+    	//std::cout << "Video closed." << std::endl;
     	return false;
     }
     else if (key == char('p'))
     {
-    	if (!pause) { std::cout << "Video paused." << std::endl; }
-    	else { std::cout << "Video unpaused." << std::endl; }
+    	//if (!pause) { std::cout << "Video paused." << std::endl; }
+    	//else { std::cout << "Video unpaused." << std::endl; }
     	pause = !pause;
     	return true;
     }
@@ -103,7 +103,7 @@ bool Annotate::checkFrame(int findex)
 {
     if (findex == stopFrame)
     {
-    	std::cout << "Reached stop frame." << std::endl;
+    	//std::cout << "Reached stop frame." << std::endl;
     	return false;
     }
     else { return true; }
@@ -178,6 +178,13 @@ int Annotate::getAnnotation()
     // wait for user to enter a correct range of labels
     for (;;)
     {
+        std::cout << "Controls:" << std::endl;
+        std::cout << "\t'p' while video is playing to pause/unpause.";
+        std::cout << std::endl;
+        std::cout << "\tinput 'r' into annotation label to replay video.";
+        std::cout << std::endl;
+        std::cout << "\tinput 'q' into annotation label to quit program.";
+        std::cout << std::endl;
         std::cout << "***********************************" << std::endl;
         std::cout << "*     Video Annotation Table      *" << std::endl;
         std::cout << "* Level 1 - Low Attention         *" << std::endl;
@@ -189,7 +196,11 @@ int Annotate::getAnnotation()
     	getline(std::cin, s);	
     	std::stringstream(s) >> label;
     	if (label == 1 || label == 2 || label == 3 || label == 4) { break; }
-    	else { std::cout << "Please try again..." << std::endl; }
+        // replay video
+    	else if (s == "r") { displayVideo(); }
+        // quit program
+        else if (s == "q") { return -1; }
+        else { std::cout << "Please try again..." << std::endl; }
     }
     std::cout << std::endl;
     return label;
@@ -216,12 +227,14 @@ void Annotate::setAnnotationFile(const std::string& fileName)
     fname = fileName;
 }
 
-void Annotate::run()
+bool Annotate::run()
 {
     // display video and grab user video control inputs
     displayVideo();
     // get video annotation from user
     int category = getAnnotation();
+    // check if user quit video
+    if (category == -1) { return false; }
     // open annotation file
     std::ofstream labels;
     labels.open(fname, std::ios::app);
@@ -230,4 +243,5 @@ void Annotate::run()
     labels << vidPath +  " " + s + "\n";
     // close file
     labels.close();
+    return true;
 }

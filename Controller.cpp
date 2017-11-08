@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <stdio.h>
 #include <experimental/filesystem>
 
 namespace fs = std::experimental::filesystem;
@@ -14,6 +15,9 @@ Controller::Controller(const std::string& dataPath, int beginFrame,
     setDataPath(dataPath);
     setFrameRanges(beginFrame, endFrame);
     setDelay(delay);
+    // remove old annotation file
+    const char* cstr = fileName.c_str();
+    std::remove(cstr);
     setAnnotationFile(fileName);
 }
 
@@ -74,9 +78,10 @@ void Controller::run()
     shuffleData(videos, VIDEOS_SIZE);
     for (int i = 0; i < VIDEOS_SIZE; ++i)
     {
-        std::cout << i << std::endl;
+        std::cout << "Video #" << i+1 << ", ";
         std::cout << videos[i] << std::endl;
 	annotator.setVideoPath(videos[i]);
-	annotator.run();
+        // check if user prompts quit program
+	if (!annotator.run()) { break; }
     }
 }

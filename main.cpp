@@ -3,8 +3,8 @@
 
 int main(int argc, char* argv[])
 {
-    int beginFrame = 30;
-    int endFrame = 70;
+    int beginFrame = 20;
+    int endFrame = 80;
     int delay = 33;
     std::string videoPath = "/home/gary/datasets/accv/positive/000310.mp4";
     std::string dataPath = "/home/gary/datasets/accv/";

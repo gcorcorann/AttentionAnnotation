@@ -98,9 +98,9 @@ class Annotate
          *
          * @param   none
          *
-         * @return  nothing
+         * @return  false if user quit program, else true
          */
-        void run();
+        bool run();
 };
 
 #endif /* ANNOTATE_H_ */
